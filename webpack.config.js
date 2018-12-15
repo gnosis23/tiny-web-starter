@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 const { resolve } = require('path')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -146,6 +147,10 @@ module.exports = {
       https://github.com/jantimon/html-webpack-plugin/issues/870
       */
       chunksSortMode: 'none'
+    }),
+
+    new webpack.DefinePlugin({
+      DEBUG: JSON.stringify(!!dev)
     })
   ],
   /*

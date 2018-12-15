@@ -1,0 +1,10 @@
+{
+  "extends": "enough",
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "globals": {
+    "DEBUG": true
+  }
+}

@@ -31,6 +31,25 @@ Webpack 一般打包生成一个 js 文件。这个插件可以生成一个 HTML
 
 可以指定一个 `template` 模板路径；例如 `index.html`，注意需要对应的 `html-loader`
 
+### [DefinePlugin](https://webpack.js.org/plugins/define-plugin/)
+在打包时往代码中的变量进行替换
+
+```js
+new webpack.DefinePlugin({
+  PRODUCTION: JSON.stringify(true),
+  VERSION: JSON.stringify('5fa3b9'),
+  BROWSER_SUPPORTS_HTML5: true,
+  TWO: '1+1',
+  'typeof window': JSON.stringify('object'),
+  'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+});
+
+// source code
+console.log('Running App version ' + VERSION);
+if(!BROWSER_SUPPORTS_HTML5) require('html5shiv');
+```
+
+
 ### webpack-dev-server
 
 
