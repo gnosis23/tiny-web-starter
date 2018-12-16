@@ -14,6 +14,8 @@
         // 的功能给关闭掉。
         "modules": false
       }
-    ]
+    ],
+    // import ...
+    "stage-2"
   ]
 }

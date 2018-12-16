@@ -32,7 +32,21 @@ module.exports = {
     path: resolve(__dirname, 'dist'),
 
     // 入口 js 的打包输出文件名
-    filename: 'index.js'
+    filename: 'index.js',
+
+    /*
+    代码中引用的文件（js、css、图片等）会根据配置合并为一个或多个包，我们称一个包为 chunk。
+    每个 chunk 包含多个 modules。无论是否是 js，webpack 都将引入的文件视为一个 module。
+    chunkFilename 用来配置这个 chunk 输出的文件名。
+
+    [chunkhash]：这个 chunk 的 hash 值，文件发生变化时该值也会变。使用 [chunkhash] 作为文件名可以
+    防止浏览器读取旧的缓存文件。
+
+    还有一个占位符 [id]，编译时每个 chunk 会有一个id。
+    我们在这里不使用它，因为这个 id 是个递增的数字，增加或减少一个chunk，都可能导致其他 chunk 的 id
+    发生改变，导致缓存失效。
+    */
+    chunkFilename: '[chunkhash].js'
   },
 
   // 目录别名
