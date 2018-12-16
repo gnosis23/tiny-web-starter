@@ -17,7 +17,8 @@ module.exports = {
   /*
   配置 source map
   开发模式下使用 cheap-module-eval-source-map, 生成的 source map 能和源码每行对应，方便打断点调试
-  生产模式下使用 hidden-source-map, 生成独立的 source map 文件，并且不在 js 文件中插入 source map 路径，
+  生产模式下使用 hidden-source-map, 生成独立的 source map 文件，并且不在 js 文件中插入 source map
+  路径，
   用于在 error report 工具中查看 （比如 Sentry)
   */
   devtool: dev ? 'cheap-module-eval-source-map' : 'hidden-source-map',
@@ -59,7 +60,8 @@ module.exports = {
 
         /*
         use 指定该文件的 loader, 值可以是字符串或者数组。
-        这里先使用 eslint-loader 处理，返回的结果交给 babel-loader 处理。loader 的处理顺序是从最后一个到第一个。
+        这里先使用 eslint-loader 处理，返回的结果交给 babel-loader 处理。loader 的处理顺序是从最后
+        一个到第一个。
         eslint-loader 用来检查代码，如果有错误，编译的时候会报错。
         babel-loader 用来编译 js 文件。
         */
@@ -84,10 +86,11 @@ module.exports = {
         /*
         先使用 css-loader 处理，返回的结果交给 style-loader 处理。
         css-loader 将 css 内容存为 js 字符串，并且会把 background, @font-face 等引用的图片，
-        字体文件交给指定的 loader 打包，类似上面的 html-loader, 用什么 loader 同样在 loaders 对象中定义，等会下面
-        就会看到。
+        字体文件交给指定的 loader 打包，类似上面的 html-loader, 用什么 loader 同样在 loaders 对象
+        中定义，等会下面就会看到。
+        postcss-loader 相当于 css 的 babel-loader
         */
-        use: ['style-loader', 'css-loader']
+        use: ['style-loader', 'css-loader', 'postcss-loader']
       },
 
       {
@@ -102,8 +105,8 @@ module.exports = {
         使用 url-loader, 它接受一个 limit 参数，单位为字节(byte)
 
         当文件体积小于 limit 时，url-loader 把文件转为 Data URI 的格式内联到引用的地方
-        当文件大于 limit 时，url-loader 会调用 file-loader, 把文件储存到输出目录，并把引用的文件路径改写成输出后
-        的路径
+        当文件大于 limit 时，url-loader 会调用 file-loader, 把文件储存到输出目录，并把引用的文件路径
+        改写成输出后的路径
 
         比如 views/foo/index.html 中
         <img src="smallpic.png">
@@ -142,8 +145,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       /*
       template 参数指定入口 html 文件路径，插件会把这个文件交给 webpack 去编译，
-      webpack 按照正常流程，找到 loaders 中 test 条件匹配的 loader 来编译，那么这里 html-loader 就是匹配的 loader
-      html-loader 编译后产生的字符串，会由 html-webpack-plugin 储存为 html 文件到输出目录，默认文件名为 index.html
+      webpack 按照正常流程，找到 loaders 中 test 条件匹配的 loader 来编译，那么这里 html-loader 就是
+      匹配的 loader
+      html-loader 编译后产生的字符串，会由 html-webpack-plugin 储存为 html 文件到输出目录，默认文件名
+      为 index.html
       可以通过 filename 参数指定输出的文件名
       html-webpack-plugin 也可以不指定 template 参数，它会使用默认的 html 模板。
       */
@@ -163,7 +168,8 @@ module.exports = {
   /*
   配置开发时用的服务器，让你可以用 http://127.0.0.1:8080/ 这样的 url 打开页面来调试
   并且带有热更新的功能，打代码时保存一下文件，浏览器会自动刷新。比 nginx 方便很多
-  如果是修改 css, 甚至不需要刷新页面，直接生效。这让像弹框这种需要点击交互后才会出来的东西调试起来方便很多。
+  如果是修改 css, 甚至不需要刷新页面，直接生效。这让像弹框这种需要点击交互后才会出来的东西调试起来
+  方便很多。
 
   因为 webpack-cli 无法正确识别 serve 选项，使用 webpack-cli 执行打包时会报错。
   因此我们在这里判断一下，仅当使用 webpack-serve 时插入 serve 选项。

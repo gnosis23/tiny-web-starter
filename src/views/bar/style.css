@@ -1,3 +1,7 @@
 .bar {
   color: blue;
 }
+
+:fullscreen a {
+  display: flex;
+}
