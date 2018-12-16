@@ -1,5 +1,5 @@
 // 引入 router
-import router from '../../router'
+import router from '~/router'
 
 // 引入 html 模板，会被作为字符串引入
 import template from './index.html'

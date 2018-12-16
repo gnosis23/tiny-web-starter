@@ -34,6 +34,13 @@ module.exports = {
     filename: 'index.js'
   },
 
+  // 目录别名
+  resolve: {
+    alias: {
+      '~': resolve(__dirname, 'src')
+    }
+  },
+
   module: {
     /*
     配置各种类型文件的加载器，称之为 loader
