@@ -25,6 +25,46 @@ import img from './file.png'
 import htmlString from './template.html';
 ```
 
+### [css-loader](https://github.com/webpack-contrib/css-loader)
+在 js 文件中操作 css 文件。 比如生成带 hash tag 的 css class。
+
+```css
+/* style.css */
+.container {
+  background: yellow;
+}
+```
+
+```js
+// 配置
+{
+  test: /\.css$/,
+  use: [
+    'style-loader',
+    {
+      loader: 'css-loader',
+      options: {
+        modules: true,
+        importLoaders: 0,
+        localIdentName: '[name]__[local]___[hash:base64:5]'
+      }
+    }
+  ]
+}
+
+// 代码
+import styles from './style.css';
+div.setAttribute('class', styles.container);
+
+// 将会生成
+// <div class="style__container___3ao-g"></div>
+```
+
+### [postcss-loader](https://github.com/postcss/postcss)
+相当于 css 的 babel-loader。
+
+插件包含 autoprefix、postcss-modules...
+
 ### html-webpack-plugin
 Webpack 一般打包生成一个 js 文件。这个插件可以生成一个 HTML 文件，bundles 文件会被自动添加到 `script`  中。
 

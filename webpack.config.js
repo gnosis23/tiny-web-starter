@@ -90,7 +90,22 @@ module.exports = {
         中定义，等会下面就会看到。
         postcss-loader 相当于 css 的 babel-loader
         */
-        use: ['style-loader', 'css-loader', 'postcss-loader']
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              // The option importLoaders allows you to configure how many loaders before
+              // css-loader should be applied to @imported resources.
+              // 0 => no loaders (default); 1 => postcss-loader
+              // 2 => postcss-loader, sass-loader
+              importLoaders: 1,
+              localIdentName: '[name]__[local]___[hash:base64:5]'
+            }
+          },
+          'postcss-loader'
+        ]
       },
 
       {

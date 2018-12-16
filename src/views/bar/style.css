@@ -5,3 +5,8 @@
 :fullscreen a {
   display: flex;
 }
+
+.gaga {
+  font-size: 36px;
+  color: greenyellow;
+}
