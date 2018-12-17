@@ -166,7 +166,7 @@ module.exports = {
         test: /\.css$/,
         use: [
           'css-hot-loader',
-          // This plugin extracts CSS into separate files. It creates a CSS file 
+          // This plugin extracts CSS into separate files. It creates a CSS file
           // per JS file which contains CSS.
           MiniCssExtractPlugin.loader,
           // css-loader 将 css 内容存为 js 字符串，并且会把 background, @font-face 等引用的图片，
@@ -189,6 +189,31 @@ module.exports = {
           },
           // postcss-loader 相当于 css 的 babel-loader
           { loader: 'postcss-loader', options: { sourceMap: true } }
+        ]
+      },
+
+      {
+        test: /\.less$/,
+        use: [
+          'css-hot-loader',
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2,
+              modules: USE_CSS_MODULES,
+              localIdentName: '[name]__[local]___[hash:base64:5]',
+              context: path.resolve(process.cwd(), 'src'),
+              sourceMap: true
+            }
+          },
+          { loader: 'postcss-loader', options: { sourceMap: true } },
+          {
+            loader: 'less-loader',
+            options: {
+              sourceMap: true
+            }
+          }
         ]
       },
 

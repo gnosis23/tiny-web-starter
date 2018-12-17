@@ -5,7 +5,7 @@ import router from '~/router'
 import template from './index.html'
 
 // 引入 css, 会生成 <style> 块插入到 <head> 头中
-import styles from './style.css'
+import styles from './style.less'
 
 // 导出类
 export default class {
