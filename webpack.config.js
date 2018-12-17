@@ -3,8 +3,11 @@ const { resolve } = require('path')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-// 使用环境变量检测当前是否是在 webpack-server 启动的开发环境中
-const dev = Boolean(process.env.debug)
+const nodeEnv = process.env.NODE_ENV || 'development'
+const isDev = nodeEnv === 'development'
+
+// Enable/disable css modules here
+const USE_CSS_MODULES = true
 
 module.exports = {
   /*
@@ -12,7 +15,7 @@ module.exports = {
   development：开发环境，它会在配置文件中插入调试相关的选项，比如 moduleId 使用文件路径方便调试
   production：生产环境，webpack 会将代码做压缩等优化
   */
-  mode: dev ? 'development' : 'production',
+  mode: isDev ? 'development' : 'production',
 
   /*
   配置 source map
@@ -21,7 +24,7 @@ module.exports = {
   路径，
   用于在 error report 工具中查看 （比如 Sentry)
   */
-  devtool: dev ? 'cheap-module-eval-source-map' : 'hidden-source-map',
+  devtool: isDev ? 'cheap-module-eval-source-map' : 'hidden-source-map',
 
   // 配置页面入口 js 文件
   entry: './src/index.js',
@@ -191,7 +194,7 @@ module.exports = {
     }),
 
     new webpack.DefinePlugin({
-      DEBUG: JSON.stringify(!!dev)
+      DEBUG: JSON.stringify(!!isDev)
     }),
 
     /*
