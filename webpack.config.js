@@ -3,6 +3,11 @@ const { resolve } = require('path')
 const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
+const CompressionPlugin = require('compression-webpack-plugin')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const ImageminPlugin = require('imagemin-webpack-plugin').default
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 const nodeEnv = process.env.NODE_ENV || 'development'
 const isDev = nodeEnv === 'development'
@@ -53,7 +58,8 @@ const getPlugins = () => {
   if (isDev) {
     // Development
     plugins.push(
-      new webpack.HotModuleReplacementPlugin()
+      new webpack.HotModuleReplacementPlugin(),
+      new FriendlyErrorsWebpackPlugin()
     )
   } else {
     plugins.push(
@@ -65,7 +71,24 @@ const getPlugins = () => {
       那么受影响的 module 所在的 chunk 的 [chunkhash] 就会发生改变，导致缓存失效。
       因此使用文件路径的 hash 作为 moduleId 来避免这个问题。
       */
-      new webpack.HashedModuleIdsPlugin()
+      new webpack.HashedModuleIdsPlugin(),
+      new CompressionPlugin({
+        test: /\.jsx?$|\.css$|\.less$|\.html$/,
+        threshold: 10240
+      }),
+      // Minimizing style for production
+      new OptimizeCssAssetsPlugin(),
+      // Plugin to compress images with imagemin
+      // Check "https://github.com/Klathmon/imagemin-webpack-plugin" for more configurations
+      new ImageminPlugin({
+        pngquant: { quality: '95-100' }
+      }),
+      // Visualize all of the webpack bundles
+      // Check "https://github.com/webpack-contrib/webpack-bundle-analyzer#options-for-plugin"
+      // for more configurations
+      new BundleAnalyzerPlugin({
+        analyzerMode: process.env.NODE_ENV === 'analyze' ? 'server' : 'disabled'
+      })
     )
   }
 
@@ -246,7 +269,8 @@ module.exports = {
           {
             loader: 'url-loader',
             options: {
-              limit: 10000
+              limit: 10240,
+              name: '[name].[hash:8].[ext]'
             }
           }
         ]
