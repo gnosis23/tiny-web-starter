@@ -35,7 +35,8 @@ module.exports = {
     path: resolve(__dirname, 'dist'),
 
     // 入口 js 的打包输出文件名
-    filename: 'index.js',
+    // Don't use chunkhash in development it will increse compilation time
+    filename: isDev ? '[name].js' : '[name].[chunkhash:8].js',
 
     /*
     代码中引用的文件（js、css、图片等）会根据配置合并为一个或多个包，我们称一个包为 chunk。
@@ -49,7 +50,8 @@ module.exports = {
     我们在这里不使用它，因为这个 id 是个递增的数字，增加或减少一个chunk，都可能导致其他 chunk 的 id
     发生改变，导致缓存失效。
     */
-    chunkFilename: '[chunkhash].js'
+    chunkFilename: isDev ? '[id].chunk.js' : '[id].[chunkhash:8].chunk.js',
+    pathinfo: isDev
   },
 
   // 目录别名
@@ -224,7 +226,7 @@ module.exports = {
       因为我们使用了 html-webpack-plugin 来动态插入 <script> 标签，entry 被拆成多个 chunk 也能自动被插入到 html 中，
       所以我们可以配置成 all, 把 entry chunk 也拆分了
       */
-      chunks: 'all'
+      chunks: isDev ? 'async' : 'all'
     }
   },
 
