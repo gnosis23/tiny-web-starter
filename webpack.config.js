@@ -1,6 +1,7 @@
 const webpack = require('webpack')
 const { resolve } = require('path')
 const path = require('path')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const nodeEnv = process.env.NODE_ENV || 'development'
@@ -8,6 +9,68 @@ const isDev = nodeEnv === 'development'
 
 // Enable/disable css modules here
 const USE_CSS_MODULES = true
+
+// Setup the plugins for development/production
+const getPlugins = () => {
+  // Common
+  const plugins = [
+    /*
+    html-webpack-plugin 用来打包入口 html 文件
+    entry 配置的入口是 js 文件，webpack 以 js 文件为入口，遇到 import, 用配置的 loader 加载引入文件
+    但作为浏览器打开的入口 html, 是引用入口 js 的文件，它在整个编译过程的外面，
+    所以，我们需要 html-webpack-plugin 来打包作为入口的 html 文件
+    */
+    new HtmlWebpackPlugin({
+      /*
+      template 参数指定入口 html 文件路径，插件会把这个文件交给 webpack 去编译，
+      webpack 按照正常流程，找到 loaders 中 test 条件匹配的 loader 来编译，那么这里 html-loader 就是
+      匹配的 loader
+      html-loader 编译后产生的字符串，会由 html-webpack-plugin 储存为 html 文件到输出目录，默认文件名
+      为 index.html
+      可以通过 filename 参数指定输出的文件名
+      html-webpack-plugin 也可以不指定 template 参数，它会使用默认的 html 模板。
+      */
+      template: './src/index.html',
+
+      /*
+      因为和 webpack 4 的兼容性问题，chunksSortMode 参数需要设置为 none
+      https://github.com/jantimon/html-webpack-plugin/issues/870
+      */
+      chunksSortMode: 'none'
+    }),
+
+    new MiniCssExtractPlugin({
+      // Don't use hash in development, we need the persistent for "renderHtml.js"
+      filename: isDev ? '[name].css' : '[name].[contenthash:8].css',
+      chunkFilename: isDev ? '[id].chunk.css' : '[id].[contenthash:8].chunk.css'
+    }),
+
+    new webpack.DefinePlugin({
+      DEBUG: JSON.stringify(!!isDev)
+    })
+  ]
+
+  if (isDev) {
+    // Development
+    plugins.push(
+      new webpack.HotModuleReplacementPlugin()
+    )
+  } else {
+    plugins.push(
+      /*
+      使用文件路径的 hash 作为 moduleId。
+      虽然我们使用 [chunkhash] 作为 chunk 的输出名，但仍然不够。
+      因为 chunk 内部的每个 module 都有一个 id，webpack 默认使用递增的数字作为 moduleId。
+      如果引入了一个新文件或删掉一个文件，可能会导致其他文件的 moduleId 也发生改变，
+      那么受影响的 module 所在的 chunk 的 [chunkhash] 就会发生改变，导致缓存失效。
+      因此使用文件路径的 hash 作为 moduleId 来避免这个问题。
+      */
+      new webpack.HashedModuleIdsPlugin()
+    )
+  }
+
+  return plugins
+}
 
 module.exports = {
   /*
@@ -101,29 +164,31 @@ module.exports = {
       {
         // 匹配 css 文件
         test: /\.css$/,
-
-        /*
-        先使用 css-loader 处理，返回的结果交给 style-loader 处理。
-        css-loader 将 css 内容存为 js 字符串，并且会把 background, @font-face 等引用的图片，
-        字体文件交给指定的 loader 打包，类似上面的 html-loader, 用什么 loader 同样在 loaders 对象
-        中定义，等会下面就会看到。
-        postcss-loader 相当于 css 的 babel-loader
-        */
         use: [
-          'style-loader',
+          'css-hot-loader',
+          // This plugin extracts CSS into separate files. It creates a CSS file 
+          // per JS file which contains CSS.
+          MiniCssExtractPlugin.loader,
+          // css-loader 将 css 内容存为 js 字符串，并且会把 background, @font-face 等引用的图片，
+          // 字体文件交给指定的 loader 打包，类似上面的 html-loader, 用什么 loader 同样在 loaders 对象
+          // 中定义，等会下面就会看到。
           {
             loader: 'css-loader',
             options: {
-              modules: true,
               // The option importLoaders allows you to configure how many loaders before
               // css-loader should be applied to @imported resources.
               // 0 => no loaders (default); 1 => postcss-loader
               // 2 => postcss-loader, sass-loader
               importLoaders: 1,
-              localIdentName: '[name]__[local]___[hash:base64:5]'
+              modules: USE_CSS_MODULES,
+              // class 编译后的名称
+              localIdentName: '[name]__[local]___[hash:base64:5]',
+              context: path.resolve(process.cwd(), 'src'),
+              sourceMap: true
             }
           },
-          'postcss-loader'
+          // postcss-loader 相当于 css 的 babel-loader
+          { loader: 'postcss-loader', options: { sourceMap: true } }
         ]
       },
 
@@ -169,46 +234,7 @@ module.exports = {
   plugin 和 loader 的区别是，loader 是在 import 时根据不同的文件名，匹配不同的 loader 对这个文件做处理，
   而 plugin, 关注的不是文件的格式，而是在编译的各个阶段，会触发不同的事件，让你可以干预每个编译阶段。
   */
-  plugins: [
-    /*
-    html-webpack-plugin 用来打包入口 html 文件
-    entry 配置的入口是 js 文件，webpack 以 js 文件为入口，遇到 import, 用配置的 loader 加载引入文件
-    但作为浏览器打开的入口 html, 是引用入口 js 的文件，它在整个编译过程的外面，
-    所以，我们需要 html-webpack-plugin 来打包作为入口的 html 文件
-    */
-    new HtmlWebpackPlugin({
-      /*
-      template 参数指定入口 html 文件路径，插件会把这个文件交给 webpack 去编译，
-      webpack 按照正常流程，找到 loaders 中 test 条件匹配的 loader 来编译，那么这里 html-loader 就是
-      匹配的 loader
-      html-loader 编译后产生的字符串，会由 html-webpack-plugin 储存为 html 文件到输出目录，默认文件名
-      为 index.html
-      可以通过 filename 参数指定输出的文件名
-      html-webpack-plugin 也可以不指定 template 参数，它会使用默认的 html 模板。
-      */
-      template: './src/index.html',
-
-      /*
-      因为和 webpack 4 的兼容性问题，chunksSortMode 参数需要设置为 none
-      https://github.com/jantimon/html-webpack-plugin/issues/870
-      */
-      chunksSortMode: 'none'
-    }),
-
-    new webpack.DefinePlugin({
-      DEBUG: JSON.stringify(!!isDev)
-    }),
-
-    /*
-    使用文件路径的 hash 作为 moduleId。
-    虽然我们使用 [chunkhash] 作为 chunk 的输出名，但仍然不够。
-    因为 chunk 内部的每个 module 都有一个 id，webpack 默认使用递增的数字作为 moduleId。
-    如果引入了一个新文件或删掉一个文件，可能会导致其他文件的 moduleId 也发生改变，
-    那么受影响的 module 所在的 chunk 的 [chunkhash] 就会发生改变，导致缓存失效。
-    因此使用文件路径的 hash 作为 moduleId 来避免这个问题。
-    */
-    new webpack.HashedModuleIdsPlugin()
-  ],
+  plugins: getPlugins(),
 
   optimization: {
     /*
