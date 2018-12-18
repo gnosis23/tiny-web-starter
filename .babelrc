@@ -1,21 +1,22 @@
 {
   "presets": [
     [
-      "env",
+      "@babel/preset-env",
       {
-        // babel 编译后的代码一般会造成性能损失，babel 提供了一个 loose 选项，
-        // 使编译后的代码不需要完全遵循 ES6 规定，简化编译后的代码，提高代码执行效率
-        // 但这么做会有兼容性的风险，可能会导致 ES6 源码理应的执行结果和编译后的 ES5 代码的
-        // 实际结果并不一致。如果代码没有遇到实际的效率瓶颈，官方 不建议 使用 loose 模式。
-        "loose": true,
-        // 我们目前的配置，babel 会把 ES6 模块定义转为 CommonJS 定义，但 webpack 自己可以
-        // 处理 import 和 export， 而且 webpack 处理 import 时会做代码优化，把没用到的部分
-        // 代码删除掉。因此我们通过 babel 提供的 modules: false 选项把 ES6 模块转为 CommonJS 模块
-        // 的功能给关闭掉。
-        "modules": false
+        "useBuiltIns": "usage"
       }
     ],
-    // import ...
-    "stage-2"
-  ]
+  ],
+  "plugins": [
+    "dynamic-import-node",
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-syntax-dynamic-import"
+  ],
+  "env": {
+    "production": {
+      "plugins": [
+        "transform-remove-console"
+      ]
+    }
+  }
 }
