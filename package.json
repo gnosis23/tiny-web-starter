@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "webpack-dev-server",
     "build": "npm run clean:build && cross-env NODE_ENV=production webpack-cli",
+    "analyze": "npm run clean:build && cross-env NODE_ENV=analyze webpack-cli",
     "clean:build": "rimraf ./dist"
   },
   "author": "",
@@ -15,7 +16,6 @@
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/preset-env": "^7.2.0",
     "@babel/register": "^7.0.0",
-    "babel-plugin-dynamic-import-node": "^2.2.0",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "babel-polyfill": "^6.26.0",
     "regenerator-runtime": "^0.13.1"
