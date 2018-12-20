@@ -118,7 +118,9 @@ module.exports = {
   // 配置打包输出相关
   output: {
     // 打包输出目录
-    path: resolve(__dirname, 'dist'),
+    path: path.resolve(process.cwd(), 'public/assets'),
+    // 在服务器上访问打包文件所需的路径，通常结尾带斜杠
+    publicPath: '/assets/',
 
     // 入口 js 的打包输出文件名
     // Don't use chunkhash in development it will increse compilation time
