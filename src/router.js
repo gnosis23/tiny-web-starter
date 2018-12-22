@@ -3,6 +3,7 @@ const routes = {
   '/foo': () => import('./views/foo'),
   '/bar': () => import('./views/bar')
 }
+const other = () => import('./views/404')
 
 // Router 类，用来控制页面根据当前 URL 切换
 class Router {
@@ -31,7 +32,7 @@ class Router {
     // 首页
     if (path === '/') path = '/foo'
     // 动态加载页面
-    const View = (await routes[path]()).default
+    const View = (await (routes[path] || other)()).default
     // 创建页面实例
     const view = new View()
     // 调用页面方法，把页面加载到 document.body 中

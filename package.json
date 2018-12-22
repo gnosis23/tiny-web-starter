@@ -4,7 +4,8 @@
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
-    "dev": "node index",
+    "dev": "cross-env NODE_ENV=development NODE_PATH=./src node index",
+    "start": "cross-env NODE_ENV=production  NODE_PATH=./src node index",
     "build": "npm run clean:build && cross-env NODE_ENV=production webpack-cli",
     "analyze": "npm run clean:build && cross-env NODE_ENV=analyze webpack-cli",
     "clean:build": "rimraf ./dist"
@@ -57,6 +58,7 @@
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
     "webpack-dev-middleware": "^3.4.0",
-    "webpack-dev-server": "^3.1.10"
+    "webpack-dev-server": "^3.1.10",
+    "webpack-hot-middleware": "^2.24.3"
   }
 }
