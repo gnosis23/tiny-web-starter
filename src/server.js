@@ -2,7 +2,9 @@ const express = require('express')
 const app = express()
 
 // eslint-disable-next-line no-undef
-if (!__DEV__) {
+if (__DEV__) {
+  // tests
+} else {
   const webpack = require('webpack')
   const webpackConfig = require('../webpack.config')
   const compiler = webpack(webpackConfig)

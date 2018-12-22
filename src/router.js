@@ -1,7 +1,7 @@
 // 引入页面文件
 const routes = {
-  '/assets/foo': () => import('./views/foo'),
-  '/assets/bar': () => import('./views/bar')
+  '/foo': () => import('./views/foo'),
+  '/bar': () => import('./views/bar')
 }
 
 // Router 类，用来控制页面根据当前 URL 切换
@@ -29,7 +29,7 @@ class Router {
   // 使用 async/await 语法
   async load(path) {
     // 首页
-    if (path === '/assets/') path = '/assets/foo'
+    if (path === '/') path = '/foo'
     // 动态加载页面
     const View = (await routes[path]()).default
     // 创建页面实例
