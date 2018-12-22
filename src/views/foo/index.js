@@ -10,7 +10,7 @@ import './style.css'
 // 导出类
 export default class {
   mount(container) {
-    document.title = 'foo123'
+    document.title = 'foo'
     container.innerHTML = template
     container.querySelector('.foo__gobar').addEventListener('click', () => {
       // 调用 router.go 方法加载 /bar 页面

@@ -35,7 +35,9 @@ if (!__DEV__) {
 
   app.use(
     require('webpack-hot-middleware')(compiler, {
-      log: false // Turn it off for friendly-errors-webpack-plugin
+      log: console.log,
+      path: '/__webpack_hmr',
+      heartbeat: 10 * 1000
     })
   );
 }
