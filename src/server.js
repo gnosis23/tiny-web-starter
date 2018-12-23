@@ -1,8 +1,12 @@
-const express = require('express')
-const path = require('path')
+import express from 'express'
+import path from 'path'
+import chalk from 'chalk'
+import openBrowser from 'react-dev-utils/openBrowser'
+import favicon from 'serve-favicon'
+
 const app = express()
-const chalk = require('chalk')
-const openBrowser = require('react-dev-utils/openBrowser')
+
+app.use(favicon(path.resolve(process.cwd(), 'src/assets/favicon.ico')))
 
 // eslint-disable-next-line no-undef
 if (!__DEV__) {
