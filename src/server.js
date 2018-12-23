@@ -1,6 +1,8 @@
 const express = require('express')
 const path = require('path')
 const app = express()
+const chalk = require('chalk')
+const openBrowser = require('react-dev-utils/openBrowser')
 
 // eslint-disable-next-line no-undef
 if (!__DEV__) {
@@ -38,5 +40,17 @@ app.use((req, res) => {
   res.sendFile(path.resolve(process.cwd(), 'public/index.html'))
 })
 
-// eslint-disable-next-line no-console
-app.listen(3000, () => console.log('Example app listening on port 3000!'))
+/* eslint-disable no-console */
+app.listen(3000, err => {
+  const url = 'http://localhost:3000'
+
+  if (err) console.error(chalk.red(`==> 😭  OMG!!! ${err}`))
+
+  console.info(chalk.green(`==> 🌎  Listening at ${url}`))
+
+  // Open browser
+  if (openBrowser(url)) {
+    console.info(chalk.green('==> 🖥️  Opened on your browser\'s tab!'))
+  }
+})
+/* eslint-enable no-console */

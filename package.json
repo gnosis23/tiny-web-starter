@@ -19,7 +19,9 @@
     "@babel/register": "^7.0.0",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "babel-polyfill": "^6.26.0",
+    "chalk": "^2.4.1",
     "express": "^4.16.4",
+    "react-dev-utils": "^6.1.1",
     "regenerator-runtime": "^0.13.1"
   },
   "devDependencies": {
