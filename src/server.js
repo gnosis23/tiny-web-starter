@@ -4,7 +4,10 @@ const app = express()
 
 // stupid spa router middleware
 app.use(function (req, res, next) {
-  const validSuffix = ['.js', '.css', '.png', '.jpg', '.jpeg', '.map', '.gz'];
+  const validSuffix = [
+    '__webpack_hmr', '.js', '.css', '.png', 
+    '.jpg', '.jpeg', '.map', '.gz', '.json'
+  ];
   if (validSuffix.every(x => !req.url.endsWith(x))) {
     req.url = '/'
   }
@@ -35,9 +38,7 @@ if (!__DEV__) {
 
   app.use(
     require('webpack-hot-middleware')(compiler, {
-      log: console.log,
-      path: '/__webpack_hmr',
-      heartbeat: 10 * 1000
+      log: false
     })
   );
 }

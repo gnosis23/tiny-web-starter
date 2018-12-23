@@ -1,5 +1,6 @@
 const webpack = require('webpack')
 const { resolve } = require('path')
+const ManifestPlugin = require('webpack-manifest-plugin');
 const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -19,6 +20,10 @@ const USE_CSS_MODULES = true
 const getPlugins = () => {
   // Common
   const plugins = [
+    new ManifestPlugin({
+      fileName: path.resolve(process.cwd(), 'public/webpack-assets.json'),
+      filter: file => file.isInitial
+    }),
     /*
     html-webpack-plugin 用来打包入口 html 文件
     entry 配置的入口是 js 文件，webpack 以 js 文件为入口，遇到 import, 用配置的 loader 加载引入文件
@@ -95,6 +100,16 @@ const getPlugins = () => {
   return plugins
 }
 
+const getEntry = () => {
+  // Development
+  let entry = ['webpack-hot-middleware/client?reload=true', './src/index.js'];
+
+  // Prodcution
+  if (!isDev) entry = ['./src/client.js'];
+
+  return entry;
+};
+
 module.exports = {
   /*
   webpack 执行模式
@@ -113,7 +128,7 @@ module.exports = {
   devtool: isDev ? 'cheap-module-eval-source-map' : 'hidden-source-map',
 
   // 配置页面入口 js 文件
-  entry: './src/index.js',
+  entry: getEntry(),
 
   // 配置打包输出相关
   output: {
