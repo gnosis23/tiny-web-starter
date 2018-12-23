@@ -1,6 +1,6 @@
 const webpack = require('webpack')
 const { resolve } = require('path')
-const ManifestPlugin = require('webpack-manifest-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin')
 const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -102,13 +102,13 @@ const getPlugins = () => {
 
 const getEntry = () => {
   // Development
-  let entry = ['webpack-hot-middleware/client?reload=true', './src/index.js'];
+  let entry = ['webpack-hot-middleware/client?reload=true', './src/index.js']
 
   // Prodcution
-  if (!isDev) entry = ['./src/client.js'];
+  if (!isDev) entry = ['./src/client.js']
 
-  return entry;
-};
+  return entry
+}
 
 module.exports = {
   /*

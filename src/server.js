@@ -3,11 +3,11 @@ const path = require('path')
 const app = express()
 
 // stupid spa router middleware
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   const validSuffix = [
-    '__webpack_hmr', '.js', '.css', '.png', 
+    '__webpack_hmr', '.js', '.css', '.png',
     '.jpg', '.jpeg', '.map', '.gz', '.json'
-  ];
+  ]
   if (validSuffix.every(x => !req.url.endsWith(x))) {
     req.url = '/'
   }
@@ -16,13 +16,13 @@ app.use(function (req, res, next) {
 
 // eslint-disable-next-line no-undef
 if (!__DEV__) {
-  app.use(express.static(path.resolve(process.cwd(), 'public')));
+  app.use(express.static(path.resolve(process.cwd(), 'public')))
 } else {
   const webpack = require('webpack')
   const webpackConfig = require('../webpack.config')
   const compiler = webpack(webpackConfig)
 
-  compiler.apply(new webpack.ProgressPlugin());
+  compiler.apply(new webpack.ProgressPlugin())
 
   app.use(require('webpack-dev-middleware')(compiler, {
     // webpack-dev-middleware options
@@ -40,7 +40,8 @@ if (!__DEV__) {
     require('webpack-hot-middleware')(compiler, {
       log: false
     })
-  );
+  )
 }
 
+// eslint-disable-next-line no-console
 app.listen(3000, () => console.log('Example app listening on port 3000!'))
