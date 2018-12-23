@@ -2,18 +2,6 @@ const express = require('express')
 const path = require('path')
 const app = express()
 
-// stupid spa router middleware
-app.use((req, res, next) => {
-  const validSuffix = [
-    '__webpack_hmr', '.js', '.css', '.png',
-    '.jpg', '.jpeg', '.map', '.gz', '.json'
-  ]
-  if (validSuffix.every(x => !req.url.endsWith(x))) {
-    req.url = '/'
-  }
-  next()
-})
-
 // eslint-disable-next-line no-undef
 if (!__DEV__) {
   app.use(express.static(path.resolve(process.cwd(), 'public')))
@@ -33,7 +21,9 @@ if (!__DEV__) {
     hot: true,
     quiet: true,
     noInfo: true,
-    stats: 'minimal'
+    stats: 'minimal',
+    // index.html 存到本地，方便下一步返回
+    writeToDisk: filePath => /index.html$/.test(filePath)
   }))
 
   app.use(
@@ -42,6 +32,11 @@ if (!__DEV__) {
     })
   )
 }
+
+// 如果没有命中wdm，默认返回首页
+app.use((req, res) => {
+  res.sendFile(path.resolve(process.cwd(), 'public/index.html'))
+})
 
 // eslint-disable-next-line no-console
 app.listen(3000, () => console.log('Example app listening on port 3000!'))

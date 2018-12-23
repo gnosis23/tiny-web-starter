@@ -105,7 +105,7 @@ const getEntry = () => {
   let entry = ['webpack-hot-middleware/client?reload=true', './src/index.js']
 
   // Prodcution
-  if (!isDev) entry = ['./src/client.js']
+  if (!isDev) entry = ['./src/index.js']
 
   return entry
 }
