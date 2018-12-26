@@ -1,20 +1,20 @@
-const webpack = require('webpack')
-const { resolve } = require('path')
-const ManifestPlugin = require('webpack-manifest-plugin')
-const path = require('path')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
-const CompressionPlugin = require('compression-webpack-plugin')
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const ImageminPlugin = require('imagemin-webpack-plugin').default
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const webpack = require('webpack');
+const { resolve } = require('path');
+const ManifestPlugin = require('webpack-manifest-plugin');
+const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
-const nodeEnv = process.env.NODE_ENV || 'development'
-const isDev = nodeEnv === 'development'
+const nodeEnv = process.env.NODE_ENV || 'development';
+const isDev = nodeEnv === 'development';
 
 // Enable/disable css modules here
-const USE_CSS_MODULES = true
+const USE_CSS_MODULES = true;
 
 // Setup the plugins for development/production
 const getPlugins = () => {
@@ -58,14 +58,14 @@ const getPlugins = () => {
     new webpack.DefinePlugin({
       DEBUG: JSON.stringify(!!isDev)
     })
-  ]
+  ];
 
   if (isDev) {
     // Development
     plugins.push(
       new webpack.HotModuleReplacementPlugin(),
       new FriendlyErrorsWebpackPlugin()
-    )
+    );
   } else {
     plugins.push(
       /*
@@ -94,21 +94,21 @@ const getPlugins = () => {
       new BundleAnalyzerPlugin({
         analyzerMode: process.env.NODE_ENV === 'analyze' ? 'server' : 'disabled'
       })
-    )
+    );
   }
 
-  return plugins
-}
+  return plugins;
+};
 
 const getEntry = () => {
   // Development
-  let entry = ['webpack-hot-middleware/client?reload=true', './src/index.js']
+  let entry = ['webpack-hot-middleware/client?reload=true', './src/index.js'];
 
   // Prodcution
-  if (!isDev) entry = ['./src/index.js']
+  if (!isDev) entry = ['./src/index.js'];
 
-  return entry
-}
+  return entry;
+};
 
 module.exports = {
   /*
@@ -187,7 +187,7 @@ module.exports = {
         eslint-loader 用来检查代码，如果有错误，编译的时候会报错。
         babel-loader 用来编译 js 文件。
         */
-        use: ['babel-loader', 'eslint-loader']
+        use: ['babel-loader']
       },
 
       {
@@ -337,4 +337,4 @@ module.exports = {
     compress: true,
     port: 8080
   }
-}
+};

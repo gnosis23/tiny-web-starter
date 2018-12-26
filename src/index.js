@@ -1,10 +1,13 @@
 // 将 async/await 转换成 ES5 代码后需要这个运行时库来支持
-import 'babel-polyfill'
-import router from './router'
+import 'babel-polyfill';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
+import AppRouter from './router';
 
-if (DEBUG) {
-  // eslint-disable-next-line no-console
-  console.log('in debug mode')
-}
-
-router.start()
+ReactDOM.render(
+  <BrowserRouter>
+    <AppRouter />
+  </BrowserRouter>,
+  document.getElementById('root')
+);
