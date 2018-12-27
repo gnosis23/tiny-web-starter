@@ -56,7 +56,7 @@ const getPlugins = () => {
     }),
 
     new webpack.DefinePlugin({
-      DEBUG: JSON.stringify(!!isDev)
+      __DEV__: JSON.stringify(isDev)
     })
   ];
 

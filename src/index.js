@@ -3,11 +3,24 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import { Provider } from 'react-redux';
+import { ConnectedRouter } from 'connected-react-router';
 import AppRouter from './router';
+import configureStore from './utils/configureStore';
+
+const history = createBrowserHistory();
+// Get the initial state from server-side rendering
+// const initialState = {};
+const store = configureStore(history);
 
 ReactDOM.render(
-  <BrowserRouter>
-    <AppRouter />
-  </BrowserRouter>,
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
+      <BrowserRouter>
+        <AppRouter />
+      </BrowserRouter>
+    </ConnectedRouter>
+  </Provider>,
   document.getElementById('root')
 );
