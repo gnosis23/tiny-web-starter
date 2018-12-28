@@ -24,5 +24,18 @@ export default (history, initialState = {}) => {
     enhancers
   );
 
+  if (module.hot) {
+    // Enable webpack hot module replacement for reducers
+    module.hot.accept('../reducers', () => {
+      try {
+        const createNextReducer = require('../reducers').default;
+
+        store.replaceReducer(createNextReducer(history));
+      } catch (error) {
+        console.error(`==>  Reducer hot reloading error ${error}`);
+      }
+    });
+  }
+
   return store;
 };

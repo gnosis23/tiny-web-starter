@@ -3,9 +3,10 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createBrowserHistory } from 'history';
+import { AppContainer } from 'react-hot-loader';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
-import AppRouter from './router';
+import routes from './router';
 import configureStore from './utils/configureStore';
 
 const history = createBrowserHistory();
@@ -13,11 +14,28 @@ const history = createBrowserHistory();
 // const initialState = {};
 const store = configureStore(history);
 
-ReactDOM.render(
-  <Provider store={store}>
-    <ConnectedRouter history={history}>
-      <AppRouter />
-    </ConnectedRouter>
-  </Provider>,
-  document.getElementById('root')
-);
+const render = Routes => {
+  ReactDOM.render(
+    <AppContainer>
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <Routes />
+        </ConnectedRouter>
+      </Provider>
+    </AppContainer>,
+    document.getElementById('root')
+  );
+};
+
+render(routes);
+
+if (module.hot) {
+  // Enable webpack hot module replacement for routes
+  try {
+    const nextRoutes = require('./router').default;
+
+    render(nextRoutes);
+  } catch (error) {
+    console.error(`==> Routes hot reloading error ${error}`);
+  }
+}
