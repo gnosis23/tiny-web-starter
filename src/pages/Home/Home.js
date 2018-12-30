@@ -44,16 +44,7 @@ export class Home extends PureComponent {
 const mapStateToProps = ({ home }) => ({ home });
 
 const mapDispatchToProps = dispatch => ({
-  fetchUsersIfNeeded: () => {
-    dispatch({
-      type: 'USERS_SUCCESS',
-      data: [
-        { id: 1, name: 'wang' },
-        { id: 2, name: 'zhao' },
-        { id: 3, name: 'qian' }
-      ]
-    });
-  }
+  fetchUsersIfNeeded: () => dispatch({ type: 'FETCH_USER_LIST' })
 });
 
 export default compose(
