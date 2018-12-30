@@ -1,7 +1,13 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 
-const reducers = {};
+import home from './home';
+import userInfo from './userInfo';
+
+const reducers = {
+  home,
+  userInfo
+};
 
 export default history =>
   combineReducers({

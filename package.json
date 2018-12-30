@@ -24,8 +24,7 @@
     "connected-react-router": "^5.0.1",
     "express": "^4.16.4",
     "history": "^4.7.2",
-    "regenerator-runtime": "^0.13.1",
-    "serve-favicon": "^2.5.0",
+    "lodash": "^4.17.11",
     "react": "^16.6.3",
     "react-dev-utils": "^6.1.1",
     "react-dom": "^16.6.3",
@@ -36,7 +35,9 @@
     "react-router": "^4.4.0-beta.6",
     "react-router-config": "^4.4.0-beta.6",
     "react-router-dom": "^4.4.0-beta.6",
-    "redux": "^4.0.1"
+    "redux": "^4.0.1",
+    "regenerator-runtime": "^0.13.1",
+    "serve-favicon": "^2.5.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.0",

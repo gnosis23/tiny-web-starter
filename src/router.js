@@ -1,13 +1,13 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import Foo from './views/foo';
-import Bar from './views/bar';
+import asyncHome from './pages/Home';
+import asyncUserInfo from './pages/UserInfo';
 
 const AppRouter = () => (
   <Switch>
-    <Route path="/" exact component={Foo} />
-    <Route path="/foo" component={Foo} />
-    <Route path="/bar" component={Bar} />
+    <Route path="/" exact component={asyncHome} />
+    <Route path="/home" component={asyncHome} />
+    <Route path="/UserInfo/:id" component={asyncUserInfo} />
   </Switch>
 );
 
