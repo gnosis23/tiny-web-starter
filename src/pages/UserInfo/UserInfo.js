@@ -46,14 +46,8 @@ const mapStateToProps = ({ userInfo }) => ({ userInfo });
 const mapDispatchToProps = dispatch => ({
   fetchUserIfNeeded: id => {
     dispatch({
-      type: 'USER_SUCCESS',
-      userId: id,
-      data: {
-        name: 'wang',
-        phone: '4008123123',
-        email: 'bj050323@gmail.com',
-        website: '12306.com'
-      }
+      type: 'FETCH_USER',
+      payload: { id }
     });
   }
 });

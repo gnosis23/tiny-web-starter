@@ -57,6 +57,19 @@ app.get('/api/home/userList', (req, res) => {
   });
 });
 
+app.get('/api/home/user', (req, res) => {
+  res.json({
+    code: 0,
+    message: 'ok',
+    data: {
+      id: 1,
+      name: 'wang',
+      email: 'bj050323@gmail.com',
+      phone: '4008123123'
+    }
+  });
+});
+
 // 如果没有命中wdm，默认返回首页
 app.use((req, res) => {
   res.sendFile(path.resolve(process.cwd(), 'public/index.html'));
