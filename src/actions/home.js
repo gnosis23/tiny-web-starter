@@ -4,8 +4,8 @@ import { queryUserList } from '../services/home';
 
 export function* fetchUserList() {
   try {
-    const data = yield call(queryUserList);
-    yield put({ type: 'USERS_SUCCESS', data: data || [] });
+    const response = yield call(queryUserList);
+    yield put({ type: 'USERS_SUCCESS', data: response.data.list || [] });
   } catch (error) {
     yield put({ type: 'USERS_FAILURE', err: error });
   }
