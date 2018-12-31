@@ -1,4 +1,4 @@
-import { takeEvery } from 'redux-saga/effects';
+import { takeEvery, all } from 'redux-saga/effects';
 import { fetchUserList } from './home';
 
 function* watchFetchData() {
@@ -6,5 +6,5 @@ function* watchFetchData() {
 }
 
 export default function* rootSaga() {
-  yield [watchFetchData()];
+  yield all([watchFetchData()]);
 }
