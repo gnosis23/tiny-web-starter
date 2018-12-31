@@ -1,24 +1,29 @@
-const webpack = require('webpack')
-const { resolve } = require('path')
-const path = require('path')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
-const CompressionPlugin = require('compression-webpack-plugin')
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const ImageminPlugin = require('imagemin-webpack-plugin').default
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const webpack = require('webpack');
+const { resolve } = require('path');
+const ManifestPlugin = require('webpack-manifest-plugin');
+const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
-const nodeEnv = process.env.NODE_ENV || 'development'
-const isDev = nodeEnv === 'development'
+const nodeEnv = process.env.NODE_ENV || 'development';
+const isDev = nodeEnv === 'development';
 
 // Enable/disable css modules here
-const USE_CSS_MODULES = true
+const USE_CSS_MODULES = true;
 
 // Setup the plugins for development/production
 const getPlugins = () => {
   // Common
   const plugins = [
+    new ManifestPlugin({
+      fileName: path.resolve(process.cwd(), 'public/webpack-assets.json'),
+      filter: file => file.isInitial
+    }),
     /*
     html-webpack-plugin 用来打包入口 html 文件
     entry 配置的入口是 js 文件，webpack 以 js 文件为入口，遇到 import, 用配置的 loader 加载引入文件
@@ -51,16 +56,16 @@ const getPlugins = () => {
     }),
 
     new webpack.DefinePlugin({
-      DEBUG: JSON.stringify(!!isDev)
+      __DEV__: JSON.stringify(isDev)
     })
-  ]
+  ];
 
   if (isDev) {
     // Development
     plugins.push(
       new webpack.HotModuleReplacementPlugin(),
       new FriendlyErrorsWebpackPlugin()
-    )
+    );
   } else {
     plugins.push(
       /*
@@ -89,11 +94,21 @@ const getPlugins = () => {
       new BundleAnalyzerPlugin({
         analyzerMode: process.env.NODE_ENV === 'analyze' ? 'server' : 'disabled'
       })
-    )
+    );
   }
 
-  return plugins
-}
+  return plugins;
+};
+
+const getEntry = () => {
+  // Development
+  let entry = ['webpack-hot-middleware/client?reload=true', './src/index.js'];
+
+  // Prodcution
+  if (!isDev) entry = ['./src/index.js'];
+
+  return entry;
+};
 
 module.exports = {
   /*
@@ -113,12 +128,14 @@ module.exports = {
   devtool: isDev ? 'cheap-module-eval-source-map' : 'hidden-source-map',
 
   // 配置页面入口 js 文件
-  entry: './src/index.js',
+  entry: getEntry(),
 
   // 配置打包输出相关
   output: {
     // 打包输出目录
-    path: resolve(__dirname, 'dist'),
+    path: path.resolve(process.cwd(), 'public'),
+    // 在服务器上访问打包文件所需的路径，通常结尾带斜杠
+    publicPath: '/',
 
     // 入口 js 的打包输出文件名
     // Don't use chunkhash in development it will increse compilation time
@@ -170,7 +187,7 @@ module.exports = {
         eslint-loader 用来检查代码，如果有错误，编译的时候会报错。
         babel-loader 用来编译 js 文件。
         */
-        use: ['babel-loader', 'eslint-loader']
+        use: ['babel-loader']
       },
 
       {
@@ -320,4 +337,4 @@ module.exports = {
     compress: true,
     port: 8080
   }
-}
+};
