@@ -58,11 +58,12 @@ app.get('/api/home/userList', (req, res) => {
 });
 
 app.get('/api/home/user', (req, res) => {
+  const id = req.query.id || 0;
   res.json({
     code: 0,
     message: 'ok',
     data: {
-      id: 1,
+      id,
       name: 'wang',
       email: 'bj050323@gmail.com',
       phone: '4008123123'
