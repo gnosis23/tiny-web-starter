@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import { call, put } from 'redux-saga/effects';
+import { call, put, takeEvery } from 'redux-saga/effects';
 import { queryUser } from '../services/userInfo';
 
 export function* fetchUser(action) {
@@ -14,3 +14,9 @@ export function* fetchUser(action) {
     yield put({ type: 'USER_FAILURE', err: error });
   }
 }
+
+function* watchFetchUser() {
+  yield takeEvery('FETCH_USER', fetchUser);
+}
+
+export default [watchFetchUser()];

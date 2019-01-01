@@ -88,7 +88,7 @@ export async function queryUserList() {
 2. 在 actions 下建立请求方法
 ```js
 // actions/home.js
-import { call, put } from 'redux-saga/effects';
+import { call, put, takeEvery } from 'redux-saga/effects';
 import { queryUserList } from '../services/home';
 
 export function* fetchUserList() {
@@ -99,25 +99,24 @@ export function* fetchUserList() {
     yield put({ type: 'USERS_FAILURE', err: error });
   }
 }
-```
-
-3. 将监听请求注册到 rootSaga 下
-```js
-// actions/index.js
-import { takeEvery, all } from 'redux-saga/effects';
-import { fetchUserList } from './home';
-import { fetchUser } from './userInfo';
 
 function* watchFetchData() {
   yield takeEvery('FETCH_USER_LIST', fetchUserList);
 }
 
-function* watchFetchUser() {
-  yield takeEvery('FETCH_USER', fetchUser);
-}
+export default [watchFetchData()];
+```
+
+3. 将监听请求注册到 rootSaga 下
+```js
+// actions/index.js
+import { all } from 'redux-saga/effects';
+import homeSagas from './home';
+import userInfoSaga from './userInfo';
 
 export default function* rootSaga() {
-  yield all([watchFetchData(), watchFetchUser()]);
+  // add your saga here
+  yield all([...homeSagas, ...userInfoSaga]);
 }
 ```
 
