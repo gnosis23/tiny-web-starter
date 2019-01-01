@@ -6,7 +6,7 @@ import { createBrowserHistory } from 'history';
 import { AppContainer } from 'react-hot-loader';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
-import routes from './router';
+import routes from './common/router';
 import configureStore from './utils/configureStore';
 
 const history = createBrowserHistory();
@@ -32,7 +32,7 @@ render(routes);
 if (module.hot) {
   // Enable webpack hot module replacement for routes
   try {
-    const nextRoutes = require('./router').default;
+    const nextRoutes = require('./common/router').default;
 
     render(nextRoutes);
   } catch (error) {
