@@ -1,97 +1,26 @@
-# Simple webpack project
-## 描述
-简单粗暴的 webpack 入门项目应该具有如下特点：
+# React + Redux Starter Project
 
-* 插件要有相关的作用说明
-* 区分调试和生成模式
+一款基于 Webpack 4，React 全家桶的初始模板项目
 
-## 插件说明
-### file-loader
-使用方式如下，在代码里加入如下所示代码，就能将文件输出到目标文件夹。
-```js
-import img from './file.png'
-```
+## Features
+包含了如下技术：
 
-### [url-loader](https://www.npmjs.com/package/url-loader)
-这个插件可以将文件转换为 Base64 URI，当然大小有限制。
+* React
+* React Router v4
+* Redux
+* Redux-saga 异步操作
+* Webpack 4
+* Babel
+* React Hot Loader 热模块替换
+* react-loader 代码切割
+* Webpack Dev Middleware 类似于 dev-server，需要自己的 server
+* ESLint
 
-比如一个图片很小，就可以转换成如下形式 `data:image/gif;base64,R0lGOD...`
+## 面向用户
+不想折腾 Webpack 配置的人
 
-太大的文件会退化为 `file-loader`
-
-### [html-loader](https://www.npmjs.com/package/html-loader)
-将文件保存为字符串
-```js
-import htmlString from './template.html';
-```
-
-### [css-loader](https://github.com/webpack-contrib/css-loader)
-在 js 文件中操作 css 文件。 比如生成带 hash tag 的 css class。
-
-```css
-/* style.css */
-.container {
-  background: yellow;
-}
-```
-
-```js
-// 配置
-{
-  test: /\.css$/,
-  use: [
-    'style-loader',
-    {
-      loader: 'css-loader',
-      options: {
-        modules: true,
-        importLoaders: 0,
-        localIdentName: '[name]__[local]___[hash:base64:5]'
-      }
-    }
-  ]
-}
-
-// 代码
-import styles from './style.css';
-div.setAttribute('class', styles.container);
-
-// 将会生成
-// <div class="style__container___3ao-g"></div>
-```
-
-### [postcss-loader](https://github.com/postcss/postcss)
-相当于 css 的 babel-loader。
-
-插件包含 autoprefix、postcss-modules...
-
-### html-webpack-plugin
-Webpack 一般打包生成一个 js 文件。这个插件可以生成一个 HTML 文件，bundles 文件会被自动添加到 `script`  中。
-
-
-可以指定一个 `template` 模板路径；例如 `index.html`，注意需要对应的 `html-loader`
-
-### [DefinePlugin](https://webpack.js.org/plugins/define-plugin/)
-在打包时往代码中的变量进行替换
-
-```js
-new webpack.DefinePlugin({
-  PRODUCTION: JSON.stringify(true),
-  VERSION: JSON.stringify('5fa3b9'),
-  BROWSER_SUPPORTS_HTML5: true,
-  TWO: '1+1',
-  'typeof window': JSON.stringify('object'),
-  'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-});
-
-// source code
-console.log('Running App version ' + VERSION);
-if(!BROWSER_SUPPORTS_HTML5) require('html5shiv');
-```
-
-
-### webpack-dev-server
-
+## 环境需求
+node >= 10.0
 
 ## 使用方式
 ```bash
@@ -102,5 +31,133 @@ npm run dev
 
 # 打包
 npm run build
+npm run start
 ```
+
+## 目录结构
+以下为文件目录结构
+```
+.
+├── public                          # 打包输出路径
+├── src                             # App source code
+│   ├── actions                     # Redux actions
+│   ├── assets                      # 一些图片资源
+│   ├── common                      # 核心逻辑等
+│   ├── components                  # 组件
+│   ├── pages                       # 页面
+│   ├── reducers                    # Redux reducers
+│   ├── services                    # 远程请求接口
+│   ├── theme                       # App-wide style and vendor CSS framework
+│   ├── utils                       # 工具类
+│   ├── index.js                    # 客户端
+│   ├── router.config.js            # 路由配置文件
+│   └── server.js                   # Express server (with webpack dev/hot middlewares)
+├── index.js                        # App entry point
+```
+
+## 使用文档
+
+### 添加路由
+将路径和对应的页面文件添加到如下文件中。
+
+```js
+// router.config.js
+export default {
+  // 路由地址
+  '/home': {
+    loader: () => import('./pages/Home') // 路由文件
+  }
+};
+```
+
+> 路径会匹配最短的那个？需要更好的处理方式
+
+### 发起远程请求
+用 `Redux-saga` 发起一个远程请求算是简单的了...
+
+1. 在 services 下建立请求接口
+```js
+// services/home.js
+import request from '../utils/request';
+
+export async function queryUserList() {
+  return request('/api/home/userList');
+}
+```
+
+2. 在 actions 下建立请求方法
+```js
+// actions/home.js
+import { call, put } from 'redux-saga/effects';
+import { queryUserList } from '../services/home';
+
+export function* fetchUserList() {
+  try {
+    const response = yield call(queryUserList);
+    yield put({ type: 'USERS_SUCCESS', data: response.data.list || [] });
+  } catch (error) {
+    yield put({ type: 'USERS_FAILURE', err: error });
+  }
+}
+```
+
+3. 将监听请求注册到 rootSaga 下
+```js
+// actions/index.js
+import { takeEvery, all } from 'redux-saga/effects';
+import { fetchUserList } from './home';
+import { fetchUser } from './userInfo';
+
+function* watchFetchData() {
+  yield takeEvery('FETCH_USER_LIST', fetchUserList);
+}
+
+function* watchFetchUser() {
+  yield takeEvery('FETCH_USER', fetchUser);
+}
+
+export default function* rootSaga() {
+  yield all([watchFetchData(), watchFetchUser()]);
+}
+```
+
+4. 在 Redux 里添加处理代码
+```js
+// reducers/home.js
+import _ from 'lodash';
+
+const initialState = {
+  readyStatus: 'USERS_INVALID',
+  err: null,
+  list: []
+};
+
+export default (state = initialState, action) => {
+  switch (action.type) {
+    case 'USERS_REQUESTING':
+      return _.assign({}, state, {
+        readyStatus: 'USERS_REQUESTING'
+      });
+    case 'USERS_FAILURE':
+      return _.assign({}, state, {
+        readyStatus: 'USERS_FAILURE',
+        err: action.err
+      });
+    case 'USERS_SUCCESS':
+      return _.assign({}, state, {
+        readyStatus: 'USERS_SUCCESS',
+        list: action.data
+      });
+    default:
+      return state;
+  }
+};
+```
+
+5. 发起请求
+```js
+dispatch({ type: 'FETCH_USER_LIST' })
+```
+
+> 注册 rootSaga 这一步还是麻烦，想想办法
 
