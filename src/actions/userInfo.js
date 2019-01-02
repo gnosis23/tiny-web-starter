@@ -15,8 +15,4 @@ export function* fetchUser(action) {
   }
 }
 
-function* watchFetchUser() {
-  yield takeEvery('FETCH_USER', fetchUser);
-}
-
-export default [watchFetchUser()];
+export default [takeEvery('FETCH_USER', fetchUser)];

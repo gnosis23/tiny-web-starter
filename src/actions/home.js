@@ -11,8 +11,4 @@ export function* fetchUserList() {
   }
 }
 
-function* watchFetchData() {
-  yield takeEvery('FETCH_USER_LIST', fetchUserList);
-}
-
-export default [watchFetchData()];
+export default [takeEvery('FETCH_USER_LIST', fetchUserList)];

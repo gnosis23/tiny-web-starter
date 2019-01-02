@@ -100,11 +100,7 @@ export function* fetchUserList() {
   }
 }
 
-function* watchFetchData() {
-  yield takeEvery('FETCH_USER_LIST', fetchUserList);
-}
-
-export default [watchFetchData()];
+export default [takeEvery('FETCH_USER_LIST', fetchUserList)];
 ```
 
 3. 将监听请求注册到 rootSaga 下
