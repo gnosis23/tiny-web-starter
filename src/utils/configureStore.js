@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { routerMiddleware } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
 
-import createRootReducer from '../reducers';
+import createRootReducer from '../cores/reducer';
 import rootSaga from '../actions';
 
 const sagaMiddleware = createSagaMiddleware();
@@ -32,9 +32,9 @@ export default (history, initialState = {}) => {
 
   if (module.hot) {
     // Enable webpack hot module replacement for reducers
-    module.hot.accept('../reducers', () => {
+    module.hot.accept('../cores/reducer', () => {
       try {
-        const createNextReducer = require('../reducers').default;
+        const createNextReducer = require('../cores/reducer').default;
 
         store.replaceReducer(createNextReducer(history));
       } catch (error) {
