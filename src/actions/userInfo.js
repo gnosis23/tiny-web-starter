@@ -6,12 +6,12 @@ export function* fetchUser(action) {
   try {
     const response = yield call(queryUser, action.payload.id);
     yield put({
-      type: 'USER_SUCCESS',
+      type: 'userSuccess',
       userId: response.data.id,
       data: response.data
     });
   } catch (error) {
-    yield put({ type: 'USER_FAILURE', err: error });
+    yield put({ type: 'userFailure', err: error });
   }
 }
 

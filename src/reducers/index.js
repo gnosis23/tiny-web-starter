@@ -1,12 +1,13 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
+import { modelToReducer } from '../utils/reduce';
+import home from '../models/home';
+import userInfo from '../models/userInfo';
 
-import home from './home';
-import userInfo from './userInfo';
-
+// add model here
 const reducers = {
-  home,
-  userInfo
+  home: modelToReducer(home),
+  userInfo: modelToReducer(userInfo)
 };
 
 export default history =>
