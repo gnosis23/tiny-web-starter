@@ -1,4 +1,4 @@
-# React + Redux Starter Project
+# React + dva-core Starter Project
 
 一款基于 Webpack 4，React 全家桶的初始模板项目
 
@@ -7,8 +7,7 @@
 
 * React
 * React Router v4
-* Redux
-* Redux-saga 异步操作
+* dva-core
 * Webpack 4
 * Babel
 * React Hot Loader 热模块替换
@@ -92,6 +91,7 @@ export async function queryUserList() {
 import { queryUserList } from '../services/home';
 
 export default {
+  namespace: 'home',
   state: {
     readyStatus: 'USERS_INVALID',
     err: null,
@@ -142,5 +142,5 @@ export default { home, userInfo };
 
 4. 发起请求
 ```js
-dispatch({ type: 'fetchUserList' })
+dispatch({ type: 'home/fetchUserList' })
 ```
