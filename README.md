@@ -1,18 +1,18 @@
-# React + dva-core Starter Project
+# React Starter Project Powered by dva-core
 
-一款基于 Webpack 4，React 全家桶的初始模板项目
+一个基于 Webpack 4 构建、dva-core 状态管理的 React 模板项目。
 
 ## Features
 包含了如下技术：
 
 * React
-* React Router v4
-* dva-core
+* React Router v4：路由选项不多
+* [dva-core](https://github.com/sorrycc/blog/issues/48)：封装了 model 的概念，极大地减少了代码量
 * Webpack 4
 * Babel
 * React Hot Loader 热模块替换
 * react-loader 代码切割
-* Webpack Dev Middleware 类似于 dev-server，需要自己的 server
+* Webpack Dev Middleware：类似于 dev-server，需要自己的 server
 * ESLint
 
 ## 面向用户
@@ -83,8 +83,7 @@ export async function queryUserList() {
 }
 ```
 
-2. 在 models 中的 `effects` 下建立请求方法。方法名称就是 **dispatch** 的名称。
-第一个参数为 action，第二个参数为 redux saga 的 effects，如 `take`, `takeEvery`, `call`, `put`
+2. 在 models 中的 `effects` 下建立请求方法，[详细接口](https://dvajs.com/api/#reducers)
 
 ```js
 // models/home.js
@@ -137,7 +136,7 @@ import home from './home';
 import userInfo from './userInfo';
 
 // add model here
-export default { home, userInfo };
+export default [ home, userInfo ];
 ```
 
 4. 发起请求
