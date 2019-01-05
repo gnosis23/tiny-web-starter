@@ -1,9 +1,24 @@
-import { createStore, applyMiddleware, compose } from 'redux';
-import { routerMiddleware } from 'connected-react-router';
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import { connectRouter, routerMiddleware } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
+import { modelToEffect, modelToReducer } from './reduce';
+import modelMap from '../models';
 
-import createRootReducer from '../cores/reducer';
-import rootSaga from '../cores/sagas';
+const reducers = Object.keys(modelMap).reduce((acc, modelName) => {
+  acc[modelName] = modelToReducer(modelMap[modelName]);
+  return acc;
+}, {});
+
+const sagas = Object.values(modelMap).reduce(
+  (acc, model) => acc.concat(modelToEffect(model)),
+  []
+);
+
+const createRootReducer = history =>
+  combineReducers({
+    router: connectRouter(history),
+    ...reducers
+  });
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -30,19 +45,6 @@ export default (history, initialState = {}) => {
     enhancers
   );
 
-  if (module.hot) {
-    // Enable webpack hot module replacement for reducers
-    module.hot.accept('../cores/reducer', () => {
-      try {
-        const createNextReducer = require('../cores/reducer').default;
-
-        store.replaceReducer(createNextReducer(history));
-      } catch (error) {
-        console.error(`==>  Reducer hot reloading error ${error}`);
-      }
-    });
-  }
-
-  sagaMiddleware.run(rootSaga);
+  sagas.forEach(sagaMiddleware.run);
   return store;
 };

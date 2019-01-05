@@ -19,7 +19,9 @@ export function modelToEffect(model) {
     function* temp(action) {
       yield effects[effect].call(null, action, { take, call, put, takeEvery });
     }
-    return takeEvery(effect, temp);
+    return function* xx() {
+      yield takeEvery(effect, temp);
+    };
   });
   return sagas;
 }
