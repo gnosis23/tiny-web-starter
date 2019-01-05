@@ -40,12 +40,11 @@ npm run start
 .
 ├── public                          # 打包输出路径
 ├── src                             # App source code
-│   ├── actions                     # Redux actions
 │   ├── assets                      # 一些图片资源
 │   ├── common                      # 核心逻辑等
 │   ├── components                  # 组件
+│   ├── models                      # model
 │   ├── pages                       # 页面
-│   ├── reducers                    # Redux reducers
 │   ├── services                    # 远程请求接口
 │   ├── theme                       # App-wide style and vendor CSS framework
 │   ├── utils                       # 工具类
@@ -85,74 +84,63 @@ export async function queryUserList() {
 }
 ```
 
-2. 在 actions 下建立请求方法
+2. 在 models 中的 `effects` 下建立请求方法。方法名称就是 **dispatch** 的名称。
+第一个参数为 action，第二个参数为 redux saga 的 effects，如 `take`, `takeEvery`, `call`, `put`
+
 ```js
-// actions/home.js
-import { call, put, takeEvery } from 'redux-saga/effects';
+// models/home.js
 import { queryUserList } from '../services/home';
 
-export function* fetchUserList() {
-  try {
-    const response = yield call(queryUserList);
-    yield put({ type: 'USERS_SUCCESS', data: response.data.list || [] });
-  } catch (error) {
-    yield put({ type: 'USERS_FAILURE', err: error });
-  }
-}
-
-export default [takeEvery('FETCH_USER_LIST', fetchUserList)];
-```
-
-3. 将监听请求注册到 rootSaga 下
-```js
-// actions/index.js
-import { all } from 'redux-saga/effects';
-import homeSagas from './home';
-import userInfoSaga from './userInfo';
-
-export default function* rootSaga() {
-  // add your saga here
-  yield all([...homeSagas, ...userInfoSaga]);
-}
-```
-
-4. 在 Redux 里添加处理代码
-```js
-// reducers/home.js
-import _ from 'lodash';
-
-const initialState = {
-  readyStatus: 'USERS_INVALID',
-  err: null,
-  list: []
-};
-
-export default (state = initialState, action) => {
-  switch (action.type) {
-    case 'USERS_REQUESTING':
-      return _.assign({}, state, {
-        readyStatus: 'USERS_REQUESTING'
-      });
-    case 'USERS_FAILURE':
-      return _.assign({}, state, {
+export default {
+  state: {
+    readyStatus: 'USERS_INVALID',
+    err: null,
+    list: []
+  },
+  reducers: {
+    usersRequesting(state) {
+      return { ...state, readyStatus: 'USERS_REQUESTING' };
+    },
+    usersFailure(state, action) {
+      return {
+        ...state,
         readyStatus: 'USERS_FAILURE',
         err: action.err
-      });
-    case 'USERS_SUCCESS':
-      return _.assign({}, state, {
+      };
+    },
+    usersSuccess(state, action) {
+      return {
+        ...state,
         readyStatus: 'USERS_SUCCESS',
         list: action.data
-      });
-    default:
-      return state;
+      };
+    }
+  },
+  effects: {
+    *fetchUserList(action, { call, put }) {
+      try {
+        const response = yield call(queryUserList);
+        yield put({ type: 'usersSuccess', data: response.data.list || [] });
+      } catch (error) {
+        yield put({ type: 'usersFailure', err: error });
+      }
+    }
   }
 };
+
 ```
 
-5. 发起请求
+3. 将 model 注册到 index 下
 ```js
-dispatch({ type: 'FETCH_USER_LIST' })
+// models/index.js
+import home from './home';
+import userInfo from './userInfo';
+
+// add model here
+export default { home, userInfo };
 ```
 
-> 注册 rootSaga 这一步还是麻烦，想想办法
-
+4. 发起请求
+```js
+dispatch({ type: 'fetchUserList' })
+```
