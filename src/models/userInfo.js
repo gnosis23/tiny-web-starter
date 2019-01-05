@@ -1,3 +1,5 @@
+import { queryUser } from '../services/userInfo';
+
 export default {
   state: {},
   reducers: {
@@ -26,6 +28,20 @@ export default {
           info: action.data
         }
       };
+    }
+  },
+  effects: {
+    *fetchUser(action, { call, put }) {
+      try {
+        const response = yield call(queryUser, action.payload.id);
+        yield put({
+          type: 'userSuccess',
+          userId: response.data.id,
+          data: response.data
+        });
+      } catch (error) {
+        yield put({ type: 'userFailure', err: error });
+      }
     }
   }
 };

@@ -3,7 +3,7 @@ import { routerMiddleware } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
 
 import createRootReducer from '../cores/reducer';
-import rootSaga from '../actions';
+import rootSaga from '../cores/sagas';
 
 const sagaMiddleware = createSagaMiddleware();
 
