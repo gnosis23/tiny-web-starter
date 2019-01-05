@@ -1,6 +1,7 @@
 import { queryUserList } from '../services/home';
 
 export default {
+  namespace: 'home',
   state: {
     readyStatus: 'USERS_INVALID',
     err: null,

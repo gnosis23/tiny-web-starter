@@ -1,6 +1,7 @@
 import { queryUser } from '../services/userInfo';
 
 export default {
+  namespace: 'userInfo',
   state: {},
   reducers: {
     userRequesting(state, action) {

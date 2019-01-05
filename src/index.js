@@ -5,14 +5,28 @@ import ReactDOM from 'react-dom';
 import { createBrowserHistory } from 'history';
 import { AppContainer } from 'react-hot-loader';
 import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router';
+import {
+  ConnectedRouter,
+  routerMiddleware,
+  connectRouter
+} from 'connected-react-router';
+import { create } from 'dva-core';
 import routes from './common/router';
-import configureStore from './utils/configureStore';
+import models from './models';
 
 const history = createBrowserHistory();
-// Get the initial state from server-side rendering
-// const initialState = {};
-const store = configureStore(history);
+const app = create({
+  extraReducers: {
+    router: connectRouter(history)
+  },
+  onAction: routerMiddleware(history)
+});
+models.forEach(model => {
+  app.model(model);
+});
+app.start();
+
+const store = app._store;
 
 const render = Routes => {
   ReactDOM.render(

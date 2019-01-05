@@ -46,7 +46,7 @@ const mapStateToProps = ({ userInfo }) => ({ userInfo });
 const mapDispatchToProps = dispatch => ({
   fetchUserIfNeeded: id => {
     dispatch({
-      type: 'fetchUser',
+      type: 'userInfo/fetchUser',
       payload: { id }
     });
   }

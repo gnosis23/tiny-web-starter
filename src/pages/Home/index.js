@@ -44,7 +44,7 @@ export class Home extends PureComponent {
 const mapStateToProps = ({ home }) => ({ home });
 
 const mapDispatchToProps = dispatch => ({
-  fetchUsersIfNeeded: () => dispatch({ type: 'fetchUserList' })
+  fetchUsersIfNeeded: () => dispatch({ type: 'home/fetchUserList' })
 });
 
 export default compose(
