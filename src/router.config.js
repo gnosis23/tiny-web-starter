@@ -1,11 +1,23 @@
-export default {
-  '/': {
-    loader: () => import('./pages/Home')
+import dynamic from './utils/dynamic';
+
+export default [
+  {
+    path: '/',
+    exact: true,
+    component: dynamic({
+      component: () => import('./pages/Home')
+    })
   },
-  '/home': {
-    loader: () => import('./pages/Home')
+  {
+    path: '/home',
+    component: dynamic({
+      component: () => import('./pages/Home')
+    })
   },
-  '/UserInfo/:id': {
-    loader: () => import('./pages/UserInfo')
+  {
+    path: '/UserInfo/:id',
+    component: dynamic({
+      component: () => import('./pages/UserInfo')
+    })
   }
-};
+];
